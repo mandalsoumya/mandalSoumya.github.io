@@ -33,6 +33,38 @@
     overflow-x: hidden;
   }
 
+  #bg-mesh {
+    position: fixed; top: -12%; left: -12%; width: 124%; height: 124%;
+    pointer-events: none; z-index: -3;
+    background:
+      radial-gradient(620px circle at 15% 22%, rgba(0,212,255,0.11), transparent 60%),
+      radial-gradient(560px circle at 86% 14%, rgba(168,255,120,0.07), transparent 60%),
+      radial-gradient(680px circle at 76% 88%, rgba(180,100,255,0.07), transparent 60%),
+      radial-gradient(520px circle at 18% 92%, rgba(0,212,255,0.06), transparent 60%);
+    animation: meshDrift 24s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  @keyframes meshDrift {
+    0%   { transform: translate(0,0) scale(1); }
+    50%  { transform: translate(1.4%, -1.2%) scale(1.04); }
+    100% { transform: translate(-1.3%, 1.3%) scale(1); }
+  }
+
+  #bg-grid {
+    position: fixed; inset: 0; pointer-events: none; z-index: -2;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 55% at 50% 25%, black 35%, transparent 78%);
+    mask-image: radial-gradient(ellipse 75% 55% at 50% 25%, black 35%, transparent 78%);
+  }
+
+  #bg-vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    background: radial-gradient(ellipse 95% 70% at 50% 0%, transparent 45%, rgba(5,8,16,0.55) 100%);
+  }
+
   #bg-canvas {
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
@@ -64,10 +96,12 @@
   .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--cyan); transition: width 0.3s; }
   .nav-links a:hover { color: var(--cyan); }
   .nav-links a:hover::after { width: 100%; }
+  .nav-links a.active { color: var(--cyan); }
+  .nav-links a.active::after { width: 100%; }
 
   section { position: relative; z-index: 1; }
 
-  #hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 8% 80px; position: relative; }
+  #about { min-height: 100vh; display: flex; align-items: center; padding: 100px 8% 80px; position: relative; }
   .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; width: 100%; }
   .hero-eyebrow {
     display: inline-flex; align-items: center; gap: 8px;
@@ -79,8 +113,16 @@
   .hero-eyebrow::before { content: ''; width: 6px; height: 6px; background: var(--cyan); border-radius: 50%; animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(1.5)} }
   .hero-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -1px; animation: fadeUp 0.8s 0.1s ease both; }
-  .hero-name .accent { color: var(--cyan); }
+  .hero-name .accent {
+    background: linear-gradient(90deg, var(--cyan), #A8FF78, var(--cyan));
+    background-size: 200% auto; background-position: 0% center;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+    animation: accentShimmer 5s linear infinite;
+  }
+  @keyframes accentShimmer { to { background-position: 200% center; } }
   .hero-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1rem, 2vw, 1.4rem); font-weight: 400; color: var(--slate2); margin: 0.8rem 0 1.5rem; animation: fadeUp 0.8s 0.2s ease both; }
+  .role-cursor { display: inline-block; width: 3px; height: 1em; background: var(--cyan); margin-left: 4px; vertical-align: middle; animation: blink 0.9s infinite; }
+  #roleTypeText { color: var(--cyan); font-weight: 500; }
   .hero-desc { font-size: 0.95rem; color: var(--slate); line-height: 1.75; max-width: 500px; animation: fadeUp 0.8s 0.3s ease both; }
   .hero-stats { display: flex; gap: 2rem; margin: 2.5rem 0; animation: fadeUp 0.8s 0.4s ease both; }
   .stat { text-align: left; position: relative; padding: 12px 16px; border: 1px solid var(--border2); border-radius: 8px; background: rgba(255,255,255,0.02); min-width: 80px; transition: border-color 0.3s, box-shadow 0.3s; }
@@ -92,12 +134,13 @@
   .stat.counted .stat-num { animation: popGlow 0.4s ease; }
   @keyframes popGlow { 0%{text-shadow:0 0 0 transparent;transform:scale(1)} 50%{text-shadow:0 0 20px var(--cyan);transform:scale(1.08)} 100%{text-shadow:none;transform:scale(1)} }
   .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.5s ease both; }
-  .btn-primary { padding: 13px 28px; background: var(--cyan); color: var(--navy); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.25s; box-shadow: 0 0 30px rgba(0,212,255,0.3); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(0,212,255,0.45); }
-  .btn-outline { padding: 13px 28px; background: transparent; color: var(--white); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.88rem; border: 1px solid var(--border2); border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.25s; }
+  .btn-primary { position: relative; overflow: hidden; padding: 13px 28px; background: var(--cyan); color: var(--navy); font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.88rem; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: transform 0.25s, box-shadow 0.25s; box-shadow: 0 0 30px rgba(0,212,255,0.3); }
+  .btn-primary:hover { box-shadow: 0 8px 40px rgba(0,212,255,0.45); }
+  .btn-outline { position: relative; overflow: hidden; padding: 13px 28px; background: transparent; color: var(--white); font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.88rem; border: 1px solid var(--border2); border-radius: 6px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.25s; }
   .btn-outline:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-glow); }
 
-  .hero-dashboard { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border), 0 0 60px rgba(0,212,255,0.04); animation: fadeUp 0.8s 0.3s ease both; }
+  .hero-dashboard { background: var(--card2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border), 0 0 60px rgba(0,212,255,0.04); animation: fadeUp 0.8s 0.3s ease both, floatPanel 6s ease-in-out 1.1s infinite; }
+  @keyframes floatPanel { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
   .dash-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--border2); }
   .dash-header .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--slate); margin-left: auto; }
   .t-dot { width: 12px; height: 12px; border-radius: 50%; }
@@ -118,7 +161,12 @@
   .p-box.serve   { background: rgba(255,100,130,0.08); border-color: rgba(255,100,130,0.25); color: #FF7096; }
   .p-status { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 1.8s infinite; }
   .p-status.slow { animation-delay: 0.3s; } .p-status.slower { animation-delay: 0.6s; }
-  .p-arrow { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--border); padding: 0 3px; flex-shrink: 0; margin-bottom: 11px; }
+  .p-arrow { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--border); padding: 0 3px; flex-shrink: 0; margin-bottom: 11px; animation: arrowFlow 2.4s ease-in-out infinite; }
+  @keyframes arrowFlow { 0%,100% { opacity: 0.35; color: var(--border); } 50% { opacity: 1; color: var(--cyan); } }
+  .pipeline-flow > .p-arrow:nth-child(2) { animation-delay: 0s; }
+  .pipeline-flow > .p-arrow:nth-child(4) { animation-delay: 0.3s; }
+  .pipeline-flow > .p-arrow:nth-child(6) { animation-delay: 0.6s; }
+  .pipeline-flow > .p-arrow:nth-child(8) { animation-delay: 0.9s; }
   .dash-skills { padding: 12px 18px; border-bottom: 1px solid var(--border2); }
   .skill-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .skill-bar-row:last-child { margin-bottom: 0; }
@@ -149,6 +197,8 @@
   .section-wrap { padding: 90px 8%; }
   .section-label { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.6rem; }
   .section-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; letter-spacing: -0.5px; margin-bottom: 0.5rem; }
+  .section-title.visible { animation: titleGlowIn 1.3s ease; }
+  @keyframes titleGlowIn { 0% { text-shadow: 0 0 0 rgba(0,212,255,0); } 35% { text-shadow: 0 0 26px rgba(0,212,255,0.4); } 100% { text-shadow: 0 0 0 rgba(0,212,255,0); } }
   .section-sub { color: var(--slate); font-size: 0.95rem; max-width: 560px; margin-bottom: 3.5rem; }
   .divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 0 8%; }
 
@@ -167,8 +217,6 @@
   .exp-item { padding-left: 2.5rem; margin-bottom: 3rem; position: relative; }
   .exp-item::before { content: ''; position: absolute; left: -5px; top: 6px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--cyan); background: var(--navy); transition: all 0.3s; }
   .exp-item:hover::before { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
-  .exp-card { background: var(--card); border: 1px solid var(--border2); border-radius: 12px; padding: 1.8rem; transition: all 0.3s; }
-  .exp-card:hover { border-color: var(--cyan); box-shadow: 0 8px 40px rgba(0,212,255,0.08); transform: translateX(4px); }
   .exp-meta { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem; }
   .exp-role { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--white); }
   .exp-company { font-size: 0.85rem; color: var(--cyan); margin-top: 2px; }
@@ -181,24 +229,83 @@
   .exp-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-size: 0.75rem; }
   .highlight { color: var(--white); font-weight: 500; }
 
-  #projects { background: var(--navy2); }
-  .projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-  .project-card { background: var(--card); border: 1px solid var(--border2); border-radius: 12px; padding: 2rem; transition: all 0.35s; position: relative; overflow: hidden; }
-  .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), transparent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
-  .project-card:hover::before { transform: scaleX(1); }
-  .project-card:hover { border-color: var(--border); transform: translateY(-6px); box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px rgba(0,212,255,0.06); }
-  .project-num { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--cyan); margin-bottom: 0.8rem; }
-  .project-name { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.8rem; }
-  .project-desc { font-size: 0.85rem; color: var(--slate); line-height: 1.7; margin-bottom: 1.2rem; }
-  .project-metrics { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
-  .metric { text-align: center; background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 8px; padding: 8px 14px; transition: all 0.2s; }
-  .project-card:hover .metric { border-color: var(--border); }
-  .metric-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--cyan); }
-  .metric-label { font-size: 0.65rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; }
+  /* ===== Experience Cards ===== */
+  .exp-card {
+    background: var(--card); border: 1px solid var(--border2); border-radius: 12px;
+    padding: 1.8rem; transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+  .exp-card:hover { border-color: var(--cyan); box-shadow: 0 8px 40px rgba(0,212,255,0.08); }
+  .exp-teaser { font-size: 0.88rem; color: var(--slate2); line-height: 1.65; margin-bottom: 1.2rem; max-width: 620px; }
+  .exp-impact-row { display: flex; gap: 8px; margin: 0 0 1.6rem; flex-wrap: wrap; }
+  .exp-impact-chip {
+    display: flex; flex-direction: column; align-items: center; padding: 8px 16px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 8px;
+    min-width: 92px; transition: all 0.25s;
+  }
+  .exp-impact-chip:hover { border-color: var(--cyan); background: rgba(0,212,255,0.05); transform: translateY(-2px); }
+  .exp-impact-val {
+    font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; font-weight: 700;
+    background: linear-gradient(135deg, var(--cyan), #A8FF78); -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .exp-impact-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.4px; margin-top: 3px; text-align: center; }
+  .exp-view-btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px;
+    background: transparent; color: var(--cyan); font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 0.84rem; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; transition: all 0.25s;
+  }
+  .exp-view-btn:hover { background: var(--cyan-glow); border-color: var(--cyan); box-shadow: 0 0 24px rgba(0,212,255,0.15); transform: translateY(-1px); }
+  .exp-view-btn svg { width: 14px; height: 14px; transition: transform 0.25s; }
+  .exp-view-btn:hover svg { transform: translate(2px, -2px); }
+
+  /* ===== Case-study modal ===== */
+  .exp-modal-overlay {
+    position: fixed; inset: 0; z-index: 999; display: flex; align-items: center; justify-content: center;
+    padding: 24px; background: rgba(5,8,16,0.78); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .exp-modal-overlay.open { opacity: 1; visibility: visible; }
+  .exp-modal {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    width: 100%; max-width: 640px; max-height: 82vh; overflow-y: auto; padding: 1.8rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(0,212,255,0.08);
+    transform: scale(0.94) translateY(14px); transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  }
+  .exp-modal-overlay.open .exp-modal { transform: scale(1) translateY(0); }
+  .exp-modal-header {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+    margin: -0.2rem -0.2rem 1.3rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border2);
+    position: sticky; top: -1.8rem; padding-top: 1.8rem; background: var(--card); z-index: 1;
+  }
+  .exp-modal-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--gold);
+    background: var(--gold-glow); border: 1px solid rgba(255,215,0,0.2); padding: 4px 14px;
+    border-radius: 20px; line-height: 1.5;
+  }
+  .exp-modal-close {
+    width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border2);
+    background: rgba(255,255,255,0.04); color: var(--slate2); display: flex; align-items: center;
+    justify-content: center; cursor: pointer; transition: all 0.25s; flex-shrink: 0;
+  }
+  .exp-modal-close:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-glow); transform: rotate(90deg); }
+  .exp-modal-close svg { width: 14px; height: 14px; }
+  .exp-modal-body .exp-bullets li {
+    opacity: 0; animation: expModalBulletIn 0.4s ease forwards;
+  }
+  @keyframes expModalBulletIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
 
   .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; }
   .cert-card { display: flex; align-items: flex-start; gap: 1rem; background: var(--card); border: 1px solid var(--border2); border-radius: 10px; padding: 1.4rem; transition: all 0.3s; }
   .cert-card:hover { border-color: var(--cyan); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,212,255,0.1); }
+  .cert-view-btn {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 12px; position: relative; overflow: hidden;
+    padding: 7px 14px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.74rem;
+    color: var(--cyan); background: transparent; border: 1px solid var(--border); border-radius: 6px;
+    text-decoration: none; cursor: pointer; transition: all 0.25s;
+  }
+  .cert-view-btn:hover { background: var(--cyan-glow); border-color: var(--cyan); box-shadow: 0 0 18px rgba(0,212,255,0.18); transform: translateY(-1px); }
+  .cert-view-btn svg { width: 12px; height: 12px; transition: transform 0.25s; }
+  .cert-view-btn:hover svg { transform: translate(2px, -2px); }
   .cert-icon { width: 44px; height: 44px; flex-shrink: 0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
   .cert-icon.azure { background: rgba(0,120,212,0.15); } .cert-icon.databricks { background: rgba(255,60,0,0.1); }
   .cert-body h4 { font-family: 'Space Grotesk', sans-serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
@@ -252,8 +359,16 @@
   .chip-db  { background: rgba(255,60,0,0.07);  border-color: rgba(255,60,0,0.2);   color: #FF7A50; }
   .chip-gate{ background: rgba(255,215,0,0.07); border-color: rgba(255,215,0,0.2);  color: var(--gold); }
   .chip-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+  .achieve-chips .chip { opacity: 0; animation: fadeUp 0.5s ease both; }
+  .achieve-chips .chip:nth-child(1) { animation-delay: 1.0s; }
+  .achieve-chips .chip:nth-child(2) { animation-delay: 1.15s; }
+  .achieve-chips .chip:nth-child(3) { animation-delay: 1.3s; }
+  .achieve-chips .chip:nth-child(4) { animation-delay: 1.45s; }
   .impact-row { display: flex; gap: 6px; }
-  .impact-pill { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 7px 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 8px; transition: all 0.25s; cursor: default; }
+  .impact-pill { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 7px 6px; background: rgba(255,255,255,0.03); border: 1px solid var(--border2); border-radius: 8px; transition: all 0.25s; cursor: default; opacity: 0; animation: fadeUp 0.5s ease both; }
+  .impact-row .impact-pill:nth-child(1) { animation-delay: 1.55s; }
+  .impact-row .impact-pill:nth-child(2) { animation-delay: 1.7s; }
+  .impact-row .impact-pill:nth-child(3) { animation-delay: 1.85s; }
   .impact-pill:hover { border-color: var(--cyan); background: rgba(0,212,255,0.05); transform: translateY(-2px); }
   .impact-val { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; background: linear-gradient(135deg, var(--cyan), #A8FF78); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
   .impact-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
@@ -262,8 +377,6 @@
   .otw-glow { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,212,255,0.06), rgba(168,255,120,0.04), rgba(0,212,255,0.06)); background-size: 200% 100%; animation: shimmer 3s linear infinite; }
   @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
   .otw-inner { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .otw-pulse-ring { position: absolute; width: 18px; height: 18px; border-radius: 50%; border: 1px solid rgba(168,255,120,0.5); animation: otwRing 1.8s ease-out infinite; }
-  @keyframes otwRing { 0%{transform:scale(0.6);opacity:1} 100%{transform:scale(1.8);opacity:0} }
   .otw-dot { width: 8px; height: 8px; border-radius: 50%; background: #A8FF78; box-shadow: 0 0 8px #A8FF78; flex-shrink: 0; position: relative; z-index: 1; }
   .otw-text { font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem; font-weight: 700; color: #A8FF78; letter-spacing: 0.3px; }
   .otw-sep { color: var(--border); }
@@ -275,6 +388,67 @@
   ::-webkit-scrollbar-track { background: var(--navy); }
   ::-webkit-scrollbar-thumb { background: var(--cyan2); border-radius: 2px; }
 
+  /* ===== Scroll progress bar ===== */
+  .scroll-progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%; z-index: 200;
+    background: linear-gradient(90deg, var(--cyan), #A8FF78);
+    box-shadow: 0 0 10px rgba(0,212,255,0.5);
+  }
+
+  /* ===== Ambient cursor glow ===== */
+  .cursor-glow {
+    position: fixed; top: 0; left: 0; width: 420px; height: 420px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,255,0.10), rgba(168,255,120,0.035) 45%, transparent 72%);
+    pointer-events: none; z-index: 2; transform: translate(-50%,-50%);
+    opacity: 0; transition: opacity 0.5s ease;
+  }
+  .cursor-glow.active { opacity: 1; }
+
+  /* ===== Button ripple ===== */
+  .ripple-span {
+    position: absolute; border-radius: 50%; background: rgba(255,255,255,0.45);
+    transform: scale(0); animation: rippleEffect 0.65s ease-out; pointer-events: none;
+  }
+  @keyframes rippleEffect { to { transform: scale(2.6); opacity: 0; } }
+
+  /* ===== Back to top ===== */
+  .back-to-top {
+    position: fixed; right: 28px; bottom: 28px; z-index: 150;
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--card); border: 1px solid var(--border2); color: var(--cyan);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    opacity: 0; visibility: hidden; transform: translateY(14px);
+    transition: opacity 0.3s ease, transform 0.3s ease, border-color 0.25s, box-shadow 0.25s, visibility 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .back-to-top.show { opacity: 1; visibility: visible; transform: translateY(0); }
+  .back-to-top:hover { border-color: var(--cyan); box-shadow: 0 0 24px rgba(0,212,255,0.25); }
+  .back-to-top svg { width: 18px; height: 18px; }
+
+  /* ===== Copy email ===== */
+  .copy-email-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%; margin-left: 6px;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border2); color: var(--slate2);
+    cursor: pointer; vertical-align: middle; transition: all 0.25s; position: relative; overflow: hidden;
+  }
+  .copy-email-btn:hover { border-color: var(--cyan); color: var(--cyan); background: var(--cyan-glow); }
+  .copy-email-btn svg { width: 13px; height: 13px; }
+  .copy-email-btn.copied { border-color: #A8FF78; color: #A8FF78; }
+  .copy-email-tip {
+    position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: #A8FF78;
+    background: var(--navy2); border: 1px solid rgba(168,255,120,0.3); padding: 4px 10px; border-radius: 6px;
+    white-space: nowrap; opacity: 0; transition: opacity 0.25s, transform 0.25s; pointer-events: none;
+  }
+  .copy-email-wrap { position: relative; display: inline-flex; align-items: center; }
+  .copy-email-wrap .copy-email-tip.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 768px) {
+    .cursor-glow { display: none; }
+    .back-to-top { right: 16px; bottom: 16px; width: 42px; height: 42px; }
+  }
+
   @media (max-width: 768px) {
     .hero-inner { grid-template-columns: 1fr; }
     .hero-dashboard { display: none; }
@@ -282,32 +456,42 @@
     .nav-links { display: none; }
     .section-wrap { padding: 60px 5%; }
     .divider { margin: 0 5%; }
+    .exp-card { padding: 1.3rem; }
+    .exp-impact-chip { min-width: 78px; padding: 6px 10px; }
+    .exp-view-btn { width: 100%; justify-content: center; }
+    .exp-modal { padding: 1.4rem; max-height: 88vh; }
+    .exp-modal-header { top: -1.4rem; padding-top: 1.4rem; }
   }
 </style>
 </head>
 <body>
 
+<div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<div id="bg-mesh"></div>
+<div id="bg-grid"></div>
+<div id="bg-vignette"></div>
 <canvas id="bg-canvas"></canvas>
 
 <nav>
-  <div class="nav-logo"><span style="color:var(--cyan);font-size:1.3rem;">⬡</span></div>
+  <div class="nav-logo"><span style="color:var(--cyan);">S</span>M</div>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#skills">Skills</a></li>
     <li><a href="#experience">Experience</a></li>
-    <li><a href="#projects">Projects</a></li>
     <li><a href="#awards">Awards</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
 
 <!-- HERO -->
-<section id="hero">
+<section id="about">
   <div class="hero-inner">
     <div class="hero-left">
       <div class="hero-eyebrow">Available for Opportunities</div>
       <h1 class="hero-name">Soumyadip<br><span class="accent">Mandal</span></h1>
-      <p class="hero-title">Data Engineer · Python Developer</p>
+      <p class="hero-title"><span id="roleTypeText">Data Engineer</span><span class="role-cursor"></span></p>
       <p class="hero-desc">Building metadata-driven, cloud-native data platforms that eliminate manual effort and ship production-grade pipelines with 99% success rates. Nearly 3 years at TCS, multiple client excellence awards.</p>
       <div class="hero-stats">
         <div class="stat"><div class="stat-num" data-target="3+">3+</div><div class="stat-label">Years Exp.</div><div class="stat-bar"></div></div>
@@ -322,6 +506,10 @@
     </div>
 
     <div class="hero-dashboard" id="heroDash">
+      <div class="dash-header">
+        <span class="t-dot red"></span><span class="t-dot yellow"></span><span class="t-dot green"></span>
+        <span class="terminal-title">soumyadip@data-eng:~$<span class="t-cursor"></span></span>
+      </div>
       <div class="dash-pipeline">
         <div class="dash-section-label">▸ Tech Stack</div>
         <div class="pipeline-flow">
@@ -371,7 +559,6 @@
       <div class="otw-footer">
         <div class="otw-glow"></div>
         <div class="otw-inner">
-          <div class="otw-pulse-ring"></div>
           <div class="otw-dot"></div>
           <span class="otw-text">Open to Work</span>
           <div class="otw-roles">
@@ -413,158 +600,140 @@
   <div class="section-wrap">
     <p class="section-label reveal">// work-experience</p>
     <h2 class="section-title reveal">Where I've Built</h2>
-    <p class="section-sub reveal">Nearly 3 years of driving measurable impact at Tata Consultancy Services, working across four high-impact data engineering projects.</p>
+    <p class="section-sub reveal">Nearly 3 years of driving measurable impact at Tata Consultancy Services, working across four high-impact data engineering projects. Click "View My Work" on any project for the full breakdown.</p>
 
     <div class="exp-timeline">
 
       <div class="exp-item reveal">
+        <div class="exp-meta">
+          <div>
+            <div class="exp-role">Systems Engineer — Data Engineer</div>
+            <div class="exp-company">Tata Consultancy Services (TCS)</div>
+          </div>
+          <div class="exp-date">Aug 2023 – Present</div>
+        </div>
         <div class="exp-card">
-          <div class="exp-meta">
-            <div>
-              <div class="exp-role">Systems Engineer — Data Engineer</div>
-              <div class="exp-company">Tata Consultancy Services (TCS)</div>
-            </div>
-            <div class="exp-date">Aug 2023 – Present</div>
-          </div>
-
           <span class="exp-project">🧠 Project: APEX — Agentic Pipeline Execution &amp; Automation</span>
+          <p class="exp-teaser">A self-orchestrating, multi-agent AI system that reads requirements straight from Jira and ships validated, tested, and documented pipelines — with zero manual handoffs.</p>
           <div class="exp-tech">
-            <span class="tech-tag">Python</span><span class="tech-tag">GitHub Copilot</span><span class="tech-tag">mcp-Atlassian tool</span>
+            <span class="tech-tag">Python</span><span class="tech-tag">GitHub Copilot</span><span class="tech-tag">XENA Coding Agent</span><span class="tech-tag">mcp-Atlassian tool</span>
           </div>
-          <ul class="exp-bullets">
-            <li>Architected a <span class="highlight">multi-agent AI system</span> using GitHub Copilot to automate end-to-end data engineering workflows, reducing manual development effort by <span class="highlight">80%</span> and accelerating delivery timelines significantly.</li>
-            <li>Developed a <span class="highlight">Jira Reader Agent</span> to autonomously extract and parse user stories from Jira, structuring requirements into machine-readable formats for downstream agent consumption.</li>
-            <li>Built a <span class="highlight">Validation Agent</span> to assess extracted Jira stories against predefined standard documents and engineering guidelines, ensuring requirement completeness and compliance before pipeline execution.</li>
-            <li>Engineered an <span class="highlight">Ingestion Agent</span> to autonomously generate and execute data ingestion jobs based on validated story instructions, eliminating manual pipeline configuration and reducing onboarding time by <span class="highlight">65%</span>.</li>
-            <li>Implemented a <span class="highlight">Data Quality (DQ) Agent</span> to automatically perform null checks, uniqueness validations, schema enforcement, and custom business rule validations post-ingestion, improving data accuracy by <span class="highlight">90%</span>.</li>
-            <li>Designed a <span class="highlight">Testing Agent</span> to auto-generate comprehensive test scripts aligned with ingestion logic and DQ rules, increasing test coverage and reducing QA effort by <span class="highlight">75%</span>.</li>
-            <li>Created a <span class="highlight">Documentation Agent</span> to produce detailed, structured project documents capturing pipeline design, data flow, validation rules, and execution summaries, ensuring audit-readiness and knowledge retention.</li>
-            <li>Developed an <span class="highlight">Orchestration Agent</span> as the central decision-making layer to intelligently assign tasks to the appropriate agents based on story type and context, triggering them sequentially and managing inter-agent dependencies.</li>
-          </ul>
+          <div class="exp-impact-row">
+            <div class="exp-impact-chip"><span class="exp-impact-val">80%</span><span class="exp-impact-lbl">Less Manual Work</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">90%</span><span class="exp-impact-lbl">Data Accuracy</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">75%</span><span class="exp-impact-lbl">Faster QA</span></div>
+          </div>
+          <button type="button" class="exp-view-btn" data-title="APEX — Agentic Pipeline Execution &amp; Automation">View My Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+          <template class="exp-detail">
+            <ul class="exp-bullets">
+              <li>Architected a <span class="highlight">multi-agent AI system</span> using GitHub Copilot to automate end-to-end data engineering workflows, reducing manual development effort by <span class="highlight">80%</span> and accelerating delivery timelines significantly.</li>
+              <li>Developed a <span class="highlight">Jira Reader Agent</span> to autonomously extract and parse user stories from Jira, structuring requirements into machine-readable formats for downstream agent consumption.</li>
+              <li>Built a <span class="highlight">Validation Agent</span> to assess extracted Jira stories against predefined standard documents and engineering guidelines, ensuring requirement completeness and compliance before pipeline execution.</li>
+              <li>Engineered an <span class="highlight">Ingestion Agent</span> to autonomously generate and execute data ingestion jobs based on validated story instructions, eliminating manual pipeline configuration and reducing onboarding time by <span class="highlight">65%</span>.</li>
+              <li>Implemented a <span class="highlight">Data Quality (DQ) Agent</span> to automatically perform null checks, uniqueness validations, schema enforcement, and custom business rule validations post-ingestion, improving data accuracy by <span class="highlight">90%</span>.</li>
+              <li>Designed a <span class="highlight">Testing Agent</span> to auto-generate comprehensive test scripts aligned with ingestion logic and DQ rules, increasing test coverage and reducing QA effort by <span class="highlight">75%</span>.</li>
+              <li>Created a <span class="highlight">Documentation Agent</span> to produce detailed, structured project documents capturing pipeline design, data flow, validation rules, and execution summaries, ensuring audit-readiness and knowledge retention.</li>
+              <li>Developed an <span class="highlight">Orchestration Agent</span> as the central decision-making layer to intelligently assign tasks to the appropriate agents based on story type and context, triggering them sequentially and managing inter-agent dependencies.</li>
+            </ul>
+          </template>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-card">
           <span class="exp-project">📊 Project: iDEE — Intelligent Data Engineering Engine</span>
+          <p class="exp-teaser">A metadata-driven ingestion engine for Redshift, S3 and ADLS that turns weeks of pipeline onboarding into hours, backed by automated data quality enforcement.</p>
           <div class="exp-tech">
             <span class="tech-tag">Python</span><span class="tech-tag">PostgreSQL</span><span class="tech-tag">Amazon Redshift</span><span class="tech-tag">Apache Airflow</span><span class="tech-tag">Grafana</span>
           </div>
-          <ul class="exp-bullets">
-            <li>Designed scalable data ingestion pipelines from <span class="highlight">Amazon Redshift, S3, and ADLS</span>, enabling seamless enterprise data integration.</li>
-            <li>Developed a <span class="highlight">metadata-driven JSON architecture</span> for source-to-target mappings — reduced onboarding effort for new data sources by <span class="highlight">70%</span>.</li>
-            <li>Orchestrated end-to-end validation with <span class="highlight">Great Expectations</span> — null checks, uniqueness, referential integrity — improving data quality compliance by <span class="highlight">95%</span>.</li>
-            <li>Reduced manual verification effort by <span class="highlight">80%</span> through automated quality checks and reporting.</li>
-            <li>Deployed <span class="highlight">Grafana</span> dashboards for real-time pipeline health and SLA tracking, cutting issue detection time by <span class="highlight">75%</span>.</li>
-            <li>Delivered <span class="highlight">50% faster dataset onboarding</span> through optimized ingestion workflows.</li>
-          </ul>
+          <div class="exp-impact-row">
+            <div class="exp-impact-chip"><span class="exp-impact-val">95%</span><span class="exp-impact-lbl">Quality Compliance</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">70%</span><span class="exp-impact-lbl">Faster Onboarding</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">75%</span><span class="exp-impact-lbl">Faster Detection</span></div>
+          </div>
+          <button type="button" class="exp-view-btn" data-title="iDEE — Intelligent Data Engineering Engine">View My Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+          <template class="exp-detail">
+            <ul class="exp-bullets">
+              <li>Designed scalable data ingestion pipelines from <span class="highlight">Amazon Redshift, S3, and ADLS</span>, enabling seamless enterprise data integration.</li>
+              <li>Developed a <span class="highlight">metadata-driven JSON architecture</span> for source-to-target mappings — reduced onboarding effort for new data sources by <span class="highlight">70%</span>.</li>
+              <li>Orchestrated end-to-end validation with <span class="highlight">Great Expectations</span> — null checks, uniqueness, referential integrity — improving data quality compliance by <span class="highlight">95%</span>.</li>
+              <li>Reduced manual verification effort by <span class="highlight">80%</span> through automated quality checks and reporting.</li>
+              <li>Deployed <span class="highlight">Grafana</span> dashboards for real-time pipeline health and SLA tracking, cutting issue detection time by <span class="highlight">75%</span>.</li>
+              <li>Delivered <span class="highlight">50% faster dataset onboarding</span> through optimized ingestion workflows.</li>
+            </ul>
+          </template>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-card">
           <span class="exp-project">🔗 Project: CORA – ORBIT Integration</span>
+          <p class="exp-teaser">An automated ingestion and semantic-search pipeline with vector embeddings, intelligent de-duplication, and real-time failure alerting — running at 99% reliability.</p>
           <div class="exp-tech">
             <span class="tech-tag">Python</span><span class="tech-tag">SQL</span><span class="tech-tag">Azure Functions</span><span class="tech-tag">SMTP</span><span class="tech-tag">Qdrant DB</span>
           </div>
-          <ul class="exp-bullets">
-            <li>Built end-to-end automated pipeline for CSV/XML ingestion, <span class="highlight">eliminating manual intervention</span> and reducing processing effort by <span class="highlight">85%</span>.</li>
-            <li>Implemented <span class="highlight">data vectorization pipelines</span> using Python to generate embeddings stored in Qdrant, enabling semantic search across large datasets.</li>
-            <li>Developed intelligent <span class="highlight">similarity matching and de-duplication</span> mechanisms, reducing duplicate data by <span class="highlight">70%</span>.</li>
-            <li>Configured <span class="highlight">automated email alerting</span> for pipeline failures, reducing incident response time by <span class="highlight">75%</span>.</li>
-            <li>Achieved <span class="highlight">99% pipeline success rate</span> through robust error-handling and retry mechanisms.</li>
-          </ul>
+          <div class="exp-impact-row">
+            <div class="exp-impact-chip"><span class="exp-impact-val">99%</span><span class="exp-impact-lbl">Pipeline Success</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">85%</span><span class="exp-impact-lbl">Less Manual Effort</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">70%</span><span class="exp-impact-lbl">Duplicate Reduction</span></div>
+          </div>
+          <button type="button" class="exp-view-btn" data-title="CORA – ORBIT Integration">View My Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+          <template class="exp-detail">
+            <ul class="exp-bullets">
+              <li>Built end-to-end automated pipeline for CSV/XML ingestion, <span class="highlight">eliminating manual intervention</span> and reducing processing effort by <span class="highlight">85%</span>.</li>
+              <li>Implemented <span class="highlight">data vectorization pipelines</span> using Python to generate embeddings stored in Qdrant, enabling semantic search across large datasets.</li>
+              <li>Developed intelligent <span class="highlight">similarity matching and de-duplication</span> mechanisms, reducing duplicate data by <span class="highlight">70%</span>.</li>
+              <li>Configured <span class="highlight">automated email alerting</span> for pipeline failures, reducing incident response time by <span class="highlight">75%</span>.</li>
+              <li>Achieved <span class="highlight">99% pipeline success rate</span> through robust error-handling and retry mechanisms.</li>
+            </ul>
+          </template>
         </div>
       </div>
 
       <div class="exp-item reveal">
         <div class="exp-card">
           <span class="exp-project">⚡ Project: DELTA — Dynamic ELT on Azure</span>
+          <p class="exp-teaser">A self-service ELT platform on Azure that lets non-engineers configure entire data pipelines, backed by a Delta Lake landing layer built for scale.</p>
           <div class="exp-tech">
             <span class="tech-tag">Azure Data Factory</span><span class="tech-tag">Azure Databricks</span><span class="tech-tag">PySpark</span><span class="tech-tag">Azure SQL</span><span class="tech-tag">ADLS Gen2</span><span class="tech-tag">Python</span><span class="tech-tag">Flask</span>
           </div>
-          <ul class="exp-bullets">
-            <li>Engineered <span class="highlight">self-service backend APIs</span> allowing non-engineers to configure data sources, targets, and business rules — reduced engineering dependency by <span class="highlight">70%</span>.</li>
-            <li>Architected <span class="highlight">comprehensive data quality validations</span> reducing production data issues by <span class="highlight">90%</span>.</li>
-            <li>Built metadata-driven ingestion framework accelerating pipeline onboarding by <span class="highlight">50%</span>.</li>
-            <li>Designed <span class="highlight">Delta Lake L0 landing layer</span> with ACID-compliant, scalable storage for large-scale ingestion.</li>
-            <li>Enhanced query performance by <span class="highlight">40%</span> using Delta Lake partitioning and schema enforcement.</li>
-            <li>Reduced data processing time by <span class="highlight">60%</span> with support for full and incremental data loads.</li>
-          </ul>
+          <div class="exp-impact-row">
+            <div class="exp-impact-chip"><span class="exp-impact-val">70%</span><span class="exp-impact-lbl">Less Eng. Dependency</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">90%</span><span class="exp-impact-lbl">Fewer Issues</span></div>
+            <div class="exp-impact-chip"><span class="exp-impact-val">60%</span><span class="exp-impact-lbl">Faster Processing</span></div>
+          </div>
+          <button type="button" class="exp-view-btn" data-title="DELTA — Dynamic ELT on Azure">View My Work<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></button>
+          <template class="exp-detail">
+            <ul class="exp-bullets">
+              <li>Engineered <span class="highlight">self-service backend APIs</span> allowing non-engineers to configure data sources, targets, and business rules — reduced engineering dependency by <span class="highlight">70%</span>.</li>
+              <li>Architected <span class="highlight">comprehensive data quality validations</span> reducing production data issues by <span class="highlight">90%</span>.</li>
+              <li>Built metadata-driven ingestion framework accelerating pipeline onboarding by <span class="highlight">50%</span>.</li>
+              <li>Designed <span class="highlight">Delta Lake L0 landing layer</span> with ACID-compliant, scalable storage for large-scale ingestion.</li>
+              <li>Enhanced query performance by <span class="highlight">40%</span> using Delta Lake partitioning and schema enforcement.</li>
+              <li>Reduced data processing time by <span class="highlight">60%</span> with support for full and incremental data loads.</li>
+            </ul>
+          </template>
         </div>
       </div>
-
-
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-wrap">
-    <p class="section-label reveal">// key-projects</p>
-    <h2 class="section-title reveal">Impact by Numbers</h2>
-    <p class="section-sub reveal">Every project measured in outcomes. Here's what the data says.</p>
-    <div class="projects-grid">
-
-      <!-- NEW: APEX PROJECT CARD -->
-      <div class="project-card reveal">
-        <div class="project-num">01 // APEX</div>
-        <div class="project-name">Agentic Pipeline Execution &amp; Automation</div>
-        <p class="project-desc">A multi-agent AI system where specialized agents — Jira Reader, Validator, Ingestion, DQ, Testing, and Documentation — are orchestrated end-to-end via a central decision-making Orchestration Agent, automating the full data engineering lifecycle from story to delivery.</p>
-        <div class="project-metrics">
-          <div class="metric"><div class="metric-val">80%</div><div class="metric-label">Dev Effort ↓</div></div>
-          <div class="metric"><div class="metric-val">65%</div><div class="metric-label">Onboarding ↓</div></div>
-          <div class="metric"><div class="metric-val">75%</div><div class="metric-label">QA Effort ↓</div></div>
-        </div>
-        <div class="skill-tags"><span class="tag">Agentic AI</span><span class="tag">GitHub Copilot</span><span class="tag">mcp-Atlassian tool</span>
-      </div>     
-
-      <div class="project-card reveal">
-        <div class="project-num">02 // iDEE</div>
-        <div class="project-name">Intelligent Data Engineering Engine</div>
-        <p class="project-desc">A metadata-driven pipeline platform that sources from Redshift, S3, and ADLS — with automated quality enforcement and live Grafana observability.</p>
-        <div class="project-metrics">
-          <div class="metric"><div class="metric-val">70%</div><div class="metric-label">Onboarding ↓</div></div>
-          <div class="metric"><div class="metric-val">95%</div><div class="metric-label">Quality ↑</div></div>
-          <div class="metric"><div class="metric-val">75%</div><div class="metric-label">Detection ↑</div></div>
-        </div>
-        <div class="skill-tags"><span class="tag">Airflow</span><span class="tag">PostgreSQL</span><span class="tag">Redshift</span><span class="tag">Grafana</span></div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-num">03 // CORA-ORBIT</div>
-        <div class="project-name">Vector-Powered Data Integration</div>
-        <p class="project-desc">End-to-end semantic search and de-duplication engine using Qdrant embeddings, with zero-touch CSV/XML ingestion and automated alerting.</p>
-        <div class="project-metrics">
-          <div class="metric"><div class="metric-val">99%</div><div class="metric-label">Success Rate</div></div>
-          <div class="metric"><div class="metric-val">85%</div><div class="metric-label">Effort ↓</div></div>
-          <div class="metric"><div class="metric-val">70%</div><div class="metric-label">Duplicates ↓</div></div>
-        </div>
-        <div class="skill-tags"><span class="tag">Qdrant</span><span class="tag">Embeddings</span><span class="tag">Azure Fn</span><span class="tag">SMTP</span></div>
-      </div>
-
-      <div class="project-card reveal">
-        <div class="project-num">04 // DELTA</div>
-        <div class="project-name">Self-Service ELT on Azure</div>
-        <p class="project-desc">A full self-service data platform with Flask APIs, ADF, and Databricks. Non-engineers configure their own pipelines via UI — no code needed.</p>
-        <div class="project-metrics">
-          <div class="metric"><div class="metric-val">90%</div><div class="metric-label">Issues ↓</div></div>
-          <div class="metric"><div class="metric-val">60%</div><div class="metric-label">Time ↓</div></div>
-          <div class="metric"><div class="metric-val">40%</div><div class="metric-label">Query ↑</div></div>
-        </div>
-        <div class="skill-tags"><span class="tag">ADF</span><span class="tag">Databricks</span><span class="tag">PySpark</span><span class="tag">Delta Lake</span></div>
-      </div>
-
- 
-
+<!-- Shared case-study modal for "View My Work" -->
+<div class="exp-modal-overlay" id="expModalOverlay">
+  <div class="exp-modal" role="dialog" aria-modal="true" aria-labelledby="expModalTitle">
+    <div class="exp-modal-header">
+      <span class="exp-modal-title" id="expModalTitle"></span>
+      <button type="button" class="exp-modal-close" id="expModalClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
     </div>
+    <div class="exp-modal-body" id="expModalBody"></div>
   </div>
-</section>
+</div>
 
 <div class="divider"></div>
+
 
 <!-- CERTIFICATIONS -->
 <section id="certifications">
@@ -575,15 +744,30 @@
     <div class="certs-grid">
       <div class="cert-card reveal">
         <div class="cert-icon databricks">🔥</div>
-        <div class="cert-body"><h4>Databricks Certified GenAI Engineer Associate</h4><p>Certified in building GenAI workflows with Databricks and LLM pipelines.</p><div class="cert-date">// October 2025</div></div>
+        <div class="cert-body">
+          <h4>Databricks Certified GenAI Engineer Associate</h4>
+          <p>Certified in building GenAI workflows with Databricks and LLM pipelines.</p>
+          <div class="cert-date">// October 2025</div>
+          <a href="https://drive.google.com/file/d/1jbPisNPK35KnS-D92LIO6Q_VisuXYXAR/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="cert-view-btn">View Certificate<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </div>
       </div>
       <div class="cert-card reveal">
         <div class="cert-icon azure">🪟</div>
-        <div class="cert-body"><h4>Microsoft Certified: Fabric Analytics Engineer Associate</h4><p>End-to-end analytics on Microsoft Fabric — lakehouses, pipelines & reports.</p><div class="cert-date">// October 2024</div></div>
+        <div class="cert-body">
+          <h4>Microsoft Certified: Fabric Analytics Engineer Associate</h4>
+          <p>End-to-end analytics on Microsoft Fabric — lakehouses, pipelines & reports.</p>
+          <div class="cert-date">// October 2024</div>
+          <a href="https://drive.google.com/file/d/19YxrEEanevpq5cu2-agJZ2YonWh5B-xw/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="cert-view-btn">View Certificate<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </div>
       </div>
       <div class="cert-card reveal">
         <div class="cert-icon azure">☁️</div>
-        <div class="cert-body"><h4>Microsoft Certified: Azure Data Engineer Associate</h4><p>Data storage, processing, and security on the Azure cloud platform.</p><div class="cert-date">// October 2023</div></div>
+        <div class="cert-body">
+          <h4>Microsoft Certified: Azure Data Engineer Associate</h4>
+          <p>Data storage, processing, and security on the Azure cloud platform.</p>
+          <div class="cert-date">// October 2023</div>
+          <a href="https://drive.google.com/file/d/1KUS6ND2VQUT7iB01D80qNZKfhKgCYwgJ/view?usp=drivesdk" target="_blank" rel="noopener noreferrer" class="cert-view-btn">View Certificate<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg></a>
+        </div>
       </div>
     </div>
   </div>
@@ -641,7 +825,13 @@
     <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; padding:6px 16px; border-radius:20px; background:var(--cyan-glow); border:1px solid var(--border); color:var(--cyan);">Associate / Senior Associate</span>
   </div>
   <div class="reveal" style="text-align:center; margin-bottom:2.5rem;">
-    <a class="contact-email" href="mailto:mandalsoumya46.mid@gmail.com">mandalsoumya46.mid@gmail.com</a>
+    <span class="copy-email-wrap">
+      <a class="contact-email" href="mailto:mandalsoumya46.mid@gmail.com">mandalsoumya46.mid@gmail.com</a>
+      <button type="button" class="copy-email-btn" id="copyEmailBtn" aria-label="Copy email address">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      </button>
+      <span class="copy-email-tip" id="copyEmailTip">Copied!</span>
+    </span>
   </div>
   <div class="social-links reveal">
     <a href="https://linkedin.com/in/soumyadipmandal" class="social-link" target="_blank">
@@ -664,6 +854,10 @@
   <span>Data Engineer · Cloud Native</span>
   <span>Built with precision ⚡</span>
 </footer>
+
+<button type="button" class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
 
 <script>
 const canvas = document.getElementById('bg-canvas');
@@ -688,7 +882,7 @@ reveals.forEach(r => io.observe(r));
 
 const sections = document.querySelectorAll('section[id]');
 const navLinks = document.querySelectorAll('.nav-links a');
-window.addEventListener('scroll', () => { let current=''; sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)current=s.id;}); navLinks.forEach(a=>{a.style.color=a.getAttribute('href')==='#'+current?'var(--cyan)':'';}); });
+window.addEventListener('scroll', () => { let current=''; sections.forEach(s=>{if(window.scrollY>=s.offsetTop-100)current=s.id;}); navLinks.forEach(a=>{a.classList.toggle('active', a.getAttribute('href')==='#'+current);}); });
 
 setTimeout(() => {
   document.querySelectorAll('.sb-fill').forEach(el => { el.style.width = el.dataset.w + '%'; });
@@ -711,6 +905,183 @@ function animateCount(el, target, suffix, duration) {
 const statNums = document.querySelectorAll('.stat-num');
 const statsIO = new IntersectionObserver((entries) => { entries.forEach(e => { if(e.isIntersecting){const raw=e.target.dataset.target||e.target.textContent.trim();e.target.dataset.target=raw;const num=parseInt(raw.replace(/[^0-9]/g,''),10);const suffix=raw.replace(/[0-9]/g,'');const delay=parseInt(e.target.dataset.delay||0);setTimeout(()=>animateCount(e.target,num,suffix,1800),delay);statsIO.unobserve(e.target);} }); }, {threshold:0.6});
 statNums.forEach((s,i) => { s.dataset.delay=i*150; statsIO.observe(s); });
+
+/* ===== Experience "View My Work" case-study modal ===== */
+(function initExpModal() {
+  const overlay = document.getElementById('expModalOverlay');
+  if (!overlay) return;
+  const titleEl = document.getElementById('expModalTitle');
+  const bodyEl = document.getElementById('expModalBody');
+  const closeBtn = document.getElementById('expModalClose');
+
+  function openModal(title, templateEl) {
+    titleEl.innerHTML = title;
+    bodyEl.innerHTML = '';
+    bodyEl.appendChild(templateEl.content.cloneNode(true));
+    bodyEl.querySelectorAll('.exp-bullets li').forEach((li, i) => { li.style.animationDelay = (i * 60) + 'ms'; });
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.exp-view-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.exp-card');
+      const template = card.querySelector('template.exp-detail');
+      if (template) openModal(btn.dataset.title || '', template);
+    });
+  });
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+})();
+
+/* ===== Scroll progress bar ===== */
+(function initScrollProgress() {
+  const bar = document.getElementById('scrollProgress');
+  if (!bar) return;
+  function update() {
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
+    bar.style.width = pct + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();
+
+/* ===== Back to top ===== */
+(function initBackToTop() {
+  const btn = document.getElementById('backToTop');
+  if (!btn) return;
+  window.addEventListener('scroll', () => { btn.classList.toggle('show', window.scrollY > 600); }, { passive: true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+})();
+
+/* ===== Copy email ===== */
+(function initCopyEmail() {
+  const btn = document.getElementById('copyEmailBtn');
+  const tip = document.getElementById('copyEmailTip');
+  if (!btn || !tip) return;
+  btn.addEventListener('click', async () => {
+    const email = 'mandalsoumya46.mid@gmail.com';
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch (err) {
+      const ta = document.createElement('textarea');
+      ta.value = email; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove();
+    }
+    btn.classList.add('copied');
+    tip.classList.add('show');
+    setTimeout(() => { btn.classList.remove('copied'); tip.classList.remove('show'); }, 1600);
+  });
+})();
+
+/* ===== Button ripple (works on all pointer types) ===== */
+(function initRipple() {
+  document.querySelectorAll('.btn-primary, .btn-outline, .exp-view-btn, .cert-view-btn, .exp-modal-close, .copy-email-btn, .back-to-top').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      const span = document.createElement('span');
+      span.className = 'ripple-span';
+      span.style.width = span.style.height = size + 'px';
+      span.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      span.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      btn.appendChild(span);
+      span.addEventListener('animationend', () => span.remove());
+    });
+  });
+})();
+
+/* ===== Desktop-only polish: ambient cursor glow, card tilt, magnetic buttons ===== */
+(function initDesktopPolish() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const finePointer = window.matchMedia('(pointer: fine)').matches;
+  if (reduceMotion || !finePointer) return;
+
+  // Ambient cursor glow
+  const glow = document.getElementById('cursorGlow');
+  if (glow) {
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2, cx = mx, cy = my, active = false;
+    window.addEventListener('mousemove', (e) => {
+      mx = e.clientX; my = e.clientY;
+      if (!active) { active = true; glow.classList.add('active'); }
+    });
+    (function loop() {
+      cx += (mx - cx) * 0.12;
+      cy += (my - cy) * 0.12;
+      glow.style.transform = `translate(${cx}px, ${cy}px) translate(-50%, -50%)`;
+      requestAnimationFrame(loop);
+    })();
+  }
+
+  // 3D tilt on cards
+  function initTilt(selector, maxDeg) {
+    document.querySelectorAll(selector).forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const px = (e.clientX - rect.left) / rect.width;
+        const py = (e.clientY - rect.top) / rect.height;
+        const rotateY = (px - 0.5) * maxDeg * 2;
+        const rotateX = (0.5 - py) * maxDeg * 2;
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+  }
+  initTilt('.skill-card', 6);
+  initTilt('.exp-card', 3.5);
+  initTilt('.cert-card', 5);
+
+  // Magnetic buttons
+  function initMagnetic(selector, strength) {
+    document.querySelectorAll(selector).forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        btn.style.transform = `translate(${x * strength}px, ${y * strength}px)`;
+      });
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transition = 'transform 0.4s cubic-bezier(0.16,1,0.3,1)';
+        btn.style.transform = '';
+        setTimeout(() => { btn.style.transition = ''; }, 400);
+      });
+    });
+  }
+  initMagnetic('.btn-primary, .btn-outline, .exp-view-btn, .cert-view-btn', 0.22);
+})();
+
+/* ===== Role rotator under hero name ===== */
+(function initRoleRotator() {
+  const el = document.getElementById('roleTypeText');
+  if (!el) return;
+  const roles = ['Data Engineer', 'Python Developer', 'Associate / Sr. Associate'];
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) { el.textContent = roles.join(' · '); return; }
+  let ri = 0, ci = roles[0].length, deleting = false;
+  function tick() {
+    const role = roles[ri];
+    if (!deleting) {
+      ci++;
+      el.textContent = role.slice(0, ci);
+      if (ci === role.length) { setTimeout(() => { deleting = true; tick(); }, 1800); return; }
+      setTimeout(tick, 70);
+    } else {
+      ci--;
+      el.textContent = role.slice(0, ci);
+      if (ci === 0) { deleting = false; ri = (ri + 1) % roles.length; setTimeout(tick, 300); return; }
+      setTimeout(tick, 35);
+    }
+  }
+  setTimeout(() => { deleting = true; tick(); }, 2200);
+})();
+
 </script>
 </body>
 </html>
